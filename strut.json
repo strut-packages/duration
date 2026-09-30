@@ -1,0 +1,9 @@
+{
+  "name": "duration",
+  "version": "0.1.0",
+  "entry": "duration.h",
+  "description": "Integer duration construction and formatting for Strut.",
+  "license": "MIT",
+  "repository": "https://github.com/strut-packages/duration",
+  "dependencies": {}
+}
