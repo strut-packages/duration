@@ -38,6 +38,7 @@ def main():
         for command in (
             [compiler, "init"],
             [compiler, "add", str(ROOT)],
+            [compiler, "install"],
             [compiler, "install", "--offline"],
             [compiler, "packages", "--json"],
         ):
