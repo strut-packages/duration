@@ -38,7 +38,7 @@ function duration_internal_pad3(int_64 value) -> string {
     return duration_internal_decimal(value);
 }
 
-function duration_parts(int_64 milliseconds) -> DurationParts {
+function duration_internal_parts(int_64 milliseconds) -> DurationParts {
     bool negative := milliseconds < 0;
     int_64 remaining := milliseconds;
     if (negative) {
@@ -64,8 +64,8 @@ function duration_parts(int_64 milliseconds) -> DurationParts {
     };
 }
 
-function duration_format(int_64 milliseconds) -> string {
-    DurationParts parts := duration_parts(milliseconds);
+function duration_internal_format(int_64 milliseconds) -> string {
+    DurationParts parts := duration_internal_parts(milliseconds);
     result := "";
     if (parts.negative) {
         result = "-";
@@ -98,8 +98,8 @@ function duration_format(int_64 milliseconds) -> string {
     return result;
 }
 
-function duration_format_clock(int_64 milliseconds) -> string {
-    DurationParts parts := duration_parts(milliseconds);
+function duration_internal_format_clock(int_64 milliseconds) -> string {
+    DurationParts parts := duration_internal_parts(milliseconds);
     int_64 hours := parts.days * 24 + parts.hours;
     result := "";
     if (parts.negative) {
@@ -112,18 +112,40 @@ function duration_format_clock(int_64 milliseconds) -> string {
     + duration_internal_pad3(parts.milliseconds);
 }
 
-function duration_seconds(int_64 value) -> int_64 {
+function duration_internal_seconds(int_64 value) -> int_64 {
     return value * 1000;
 }
 
-function duration_minutes(int_64 value) -> int_64 {
+function duration_internal_minutes(int_64 value) -> int_64 {
     return value * 60000;
 }
 
-function duration_hours(int_64 value) -> int_64 {
+function duration_internal_hours(int_64 value) -> int_64 {
     return value * 3600000;
 }
 
-function duration_days(int_64 value) -> int_64 {
+function duration_internal_days(int_64 value) -> int_64 {
     return value * 86400000;
 }
+
+struct DurationFacade {
+    function parts(int_64 milliseconds) -> DurationParts;
+    function format(int_64 milliseconds) -> string;
+    function format_clock(int_64 milliseconds) -> string;
+    function seconds(int_64 value) -> int_64;
+    function minutes(int_64 value) -> int_64;
+    function hours(int_64 value) -> int_64;
+    function days(int_64 value) -> int_64;
+}
+
+function DurationFacade::parts(int_64 milliseconds) -> DurationParts { return duration_internal_parts(milliseconds); }
+function DurationFacade::format(int_64 milliseconds) -> string { return duration_internal_format(milliseconds); }
+function DurationFacade::format_clock(int_64 milliseconds) -> string { return duration_internal_format_clock(milliseconds); }
+function DurationFacade::seconds(int_64 value) -> int_64 { return duration_internal_seconds(value); }
+function DurationFacade::minutes(int_64 value) -> int_64 { return duration_internal_minutes(value); }
+function DurationFacade::hours(int_64 value) -> int_64 { return duration_internal_hours(value); }
+function DurationFacade::days(int_64 value) -> int_64 { return duration_internal_days(value); }
+
+function duration_internal_facade() -> DurationFacade { return DurationFacade {}; }
+
+DurationFacade duration := duration_internal_facade();
